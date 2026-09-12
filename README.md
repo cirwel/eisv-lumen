@@ -383,14 +383,14 @@ Apache 2.0. See [LICENSE](LICENSE).
 
 ```bibtex
 @misc{eisv_lumen_2026,
-  title   = {EISV-Lumen: Dynamics-Emergent Voice and Governance Benchmark},
+  title   = {EISV-Lumen: Dynamics-Emergent Voice for Embodied AI},
   author  = {hikewa},
   year    = {2026},
   url     = {https://github.com/CIRWEL/eisv-lumen},
   note    = {Three-layer trajectory-to-expression system: rule-based Layer 2
              achieves 0.933 coherence, LoRA fine-tuned teacher reaches 0.952
              on 20,655 real Lumen trajectories. Includes distilled student
-             for Pi deployment. Part of the UNITARES governance framework.}
+             for Pi deployment. Part of the UNITARES ecosystem.}
 }
 ```
 
