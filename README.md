@@ -8,9 +8,9 @@
 [![Student](https://img.shields.io/badge/HuggingFace-Student_Model-yellow)](https://huggingface.co/hikewa/eisv-lumen-student)
 [![Demo](https://img.shields.io/badge/HuggingFace-Explorer_Demo-yellow)](https://huggingface.co/spaces/hikewa/eisv-lumen-explorer)
 
-**Dynamics-emergent voice and governance benchmark for embodied AI.**
+**Dynamics-emergent voice for embodied AI, with a labelled trajectory dataset.**
 
-EISV-Lumen is a three-layer system that generates primitive expressions from information-theoretic governance trajectories. It classifies continuous EISV (Energy, Information Integrity, Entropy, Void) dynamics into 9 trajectory shape classes and maps them to contextually coherent expressions through rule-based, neural, and distilled approaches. Evaluated on real trajectory records from [Lumen](https://github.com/CIRWEL/anima-mcp) (20,655 at the current Hub revision; the [live HuggingFace dataset](https://huggingface.co/datasets/hikewa/unitares-eisv-trajectories) grows as Lumen runs) -- an embodied AI agent running on a Raspberry Pi within the [UNITARES](https://github.com/CIRWEL/unitares) governance framework -- the rule-based Layer 2 achieves 0.933 coherence with an online feedback loop, while the fine-tuned Layer 3 teacher (LoRA on Qwen3-4B) reaches 0.952 coherence on real data. A distilled RandomForest student model runs on-device on Lumen's Raspberry Pi 4. Three student variants are available:
+EISV-Lumen is a three-layer system that generates primitive expressions from an agent's own state trajectories. It classifies continuous EISV (Energy, Information Integrity, Entropy, Void) dynamics into 9 trajectory shape classes and maps them to contextually coherent expressions through rule-based, neural, and distilled approaches. Evaluated on real trajectory records from [Lumen](https://github.com/CIRWEL/anima-mcp) (20,655 at the current Hub revision; the [live HuggingFace dataset](https://huggingface.co/datasets/hikewa/unitares-eisv-trajectories) grows as Lumen runs) -- an embodied AI agent running on a Raspberry Pi within the [UNITARES](https://github.com/CIRWEL/unitares) governance framework -- the rule-based Layer 2 achieves 0.933 coherence with an online feedback loop, while the fine-tuned Layer 3 teacher (LoRA on Qwen3-4B) reaches 0.952 coherence on real data. A distilled RandomForest student model runs on-device on Lumen's Raspberry Pi 4. Three student variants are available:
 
 | Variant | Trees | Format | Size | Dependencies |
 |---------|-------|--------|------|--------------|
@@ -396,4 +396,4 @@ Apache 2.0. See [LICENSE](LICENSE).
 
 ---
 
-*EISV-Lumen is part of the [UNITARES](https://github.com/CIRWEL/unitares) framework for information-theoretic AI governance.*
+*EISV-Lumen is part of the [UNITARES](https://github.com/CIRWEL/unitares) ecosystem — a federation kernel for accountable AI agents.*

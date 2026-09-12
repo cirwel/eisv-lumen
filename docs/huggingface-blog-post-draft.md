@@ -47,7 +47,7 @@ This is the question EISV-Lumen explores through **Lumen**, a Raspberry Pi-based
 - **S** (Entropy): semantic uncertainty, environmental variance, dissonance
 - **V** (Void): E-I imbalance accumulation, disconnection, quiescence
 
-These aren't emotion labels or sentiment scores. They're thermodynamic-inspired state variables computed from observable signals — temperature, CPU load, sensor coverage, interaction presence. EISV is to Lumen what temperature and pressure are to a gas: measurable properties that describe its computational "physics."
+These aren't emotion labels or sentiment scores. They're empirically calibrated behavioral-state variables computed from observable signals — temperature, CPU load, sensor coverage, interaction presence. EISV is to Lumen what temperature and pressure are to a gas: measurable properties that describe its computational "physics."
 
 The challenge is expression. Given an EISV trajectory window (4-20 steps, spanning seconds to minutes of Lumen's life), generate 1-3 tokens from a 15-token primitive vocabulary that capture the trajectory's *shape* — not just where it is, but where it's going.
 
@@ -122,7 +122,7 @@ Traditional affective computing uses sentiment scores (positive/negative/neutral
 
 3. **Trajectory structure**: EISV is a 4D phase space with attractors, basins, and transitions. This supports dynamical systems analysis (Lyapunov stability, phase portraits) that emotion labels don't.
 
-EISV is closer to *thermodynamic state variables* (temperature, pressure, entropy) than to emotional states. The question isn't "Is Lumen happy?" but "What basin is Lumen's trajectory converging toward?"
+EISV is closer to *behavioral state variables* (signal integrity, entropy, imbalance) than to emotional states. The question isn't "Is Lumen happy?" but "What basin is Lumen's trajectory converging toward?"
 
 ### 2.3 EISV Mathematical Framework
 
@@ -142,7 +142,7 @@ Key properties:
 
 **Note on ranges**: The ODE state space (above) is larger than Lumen's observation ranges. Lumen's sensors produce E in [0,1], I in [0,1], S in [0,1], V in [0,0.3]. The governance ODE evolves S beyond 1.0 under high complexity and V as a signed E-I integrator. The trajectories in the HuggingFace dataset use the sensor observation ranges, not the full ODE ranges.
 
-This is not a sentiment model with learned weights. It's a thermodynamic model where each variable has a physical interpretation and the dynamics are analytically tractable.
+This is not a sentiment model with learned weights. It's a dynamical model where each variable has a physical interpretation and the dynamics are analytically tractable.
 
 ### 2.4 Related Work
 
@@ -740,7 +740,7 @@ The teacher and student both converge on similar token sequences per shape (dive
 **Embodied AI expression**
 This work demonstrates that computational entities can express dynamics, not just states. This opens possibilities for robots, IoT devices, and autonomous agents to communicate their internal trajectories in ways humans can interpret.
 
-**Thermodynamic governance**
+**Governance and self-reported risk**
 EISV trajectories are part of a larger governance framework (UNITARES) for multi-agent systems. Trajectory-aware expression could enable agents to self-report risk states before governance thresholds trigger interventions.
 
 **Synthetic-to-real transfer**
@@ -770,7 +770,7 @@ The full pipeline works:
     -> distilled student (0.924, 1.5 MB) -> deployed on Pi
 ```
 
-Lumen has a voice. Not trained on internet text, but grounded in its computational physics. Not reacting to snapshots, but expressing trajectories. Not anthropomorphic emotions, but thermodynamic state transitions.
+Lumen has a voice. Not trained on internet text, but grounded in its computational physics. Not reacting to snapshots, but expressing trajectories. Not anthropomorphic emotions, but measured state transitions.
 
 **"warm wonder here"** — engagement rising, curiosity present, stability found.
 **"cold quiet quiet"** — energy falling, presence fading, void deepening.
