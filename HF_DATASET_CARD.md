@@ -111,7 +111,7 @@ JSON-string columns are kept as `string` rather than nested-list types so the da
 
 ## EISV framework
 
-EISV is the four-dimensional informational state vector that UNITARES uses to track agents, derived from the information-theoretic governance model of Wang 2026a §4. For Lumen, the four dimensions are computed from physical sensor readings and system metrics:
+EISV is the four-dimensional informational state vector that UNITARES uses to track agents, derived from the governance model of Wang 2026a §4. For Lumen, the four dimensions are computed from physical sensor readings and system metrics:
 
 | Symbol | Range | Lumen mapping | Description |
 |---|---|---|---|
