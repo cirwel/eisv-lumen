@@ -29,10 +29,10 @@ configs:
 
 Time-windowed four-dimensional state-vector trajectories from **Lumen**, a Raspberry Pi-embodied agent governed by the [UNITARES](https://github.com/CIRWEL/unitares) framework, plus class-balanced synthetic augmentation. Each window is labelled with one of nine dynamical-shape classes and an optional aligned primitive-token expression.
 
-The dataset is the empirical substrate cited in:
+Related papers from the same project. Their analyses use separate production exports; neither is computed on this dataset.
 
-- **Wang, K. (2026a).** *UNITARES: Information-Theoretic Governance of Heterogeneous Agent Fleets.* Zenodo. [doi:10.5281/zenodo.19647159](https://doi.org/10.5281/zenodo.19647159) (concept; auto-resolves to latest).
-- **Wang, K. (2026b).** *Digital Proprioception and Allostatic Load: A Working Implementation of the Cumulative-Deviation Hypothesis in a Deployed Multi-Agent System.* Forthcoming.
+- **Wang, K. (2026a).** *UNITARES: Information-Theoretic Governance of Heterogeneous Agent Fleets.* Zenodo. [doi:10.5281/zenodo.19647159](https://doi.org/10.5281/zenodo.19647159) (concept DOI; resolves to the latest version).
+- **Wang, K. (2026b).** *A Flat Coherence Score: What a Production-Data Replay Does and Does Not Show About Agent Self-State Gating.* Zenodo. [doi:10.5281/zenodo.21930092](https://doi.org/10.5281/zenodo.21930092) (concept DOI; v2.0 replaces the earlier *Digital Proprioception and Allostatic Load*).
 
 ## TL;DR
 
@@ -60,10 +60,10 @@ This dataset captures **20-step sliding-window trajectories** of that EISV state
 
 - Trajectory-shape classification benchmarks for embodied-AI dynamics.
 - Dynamics-emergent expression generation (the original **EISV-Lumen** task).
-- Reproduction of behavioural-corpus claims in Wang 2026a §11 and Wang 2026b §5.
-- Analysis of regulatory-state failure modes — the **McEwen (1998) Four Types** mapping in Wang 2026b §5 uses the shape distribution here as its baseline.
+- Reproduction of behavioural-corpus claims in Wang 2026a §11.
+- Analysis of regulatory-state failure modes. Versions 1.x of Wang 2026b used the shape distribution here as the baseline for a **McEwen (1998) Four Types** mapping; v2.0 cut that analysis.
 
-If you are using this dataset to verify a claim from the neuro-AI paper, see [§ Reproducing paper claims](#reproducing-paper-claims) below.
+If you are using this dataset to verify a claim from an earlier version of Wang 2026b, see [§ Reproducing paper claims](#reproducing-paper-claims) below.
 
 ## Provenance and integrity
 
@@ -162,9 +162,9 @@ The dominant disagreement (~5,138 windows in the 4-step case) is `settled_presen
 
 ## Reproducing paper claims
 
-The neuro-AI paper (Wang 2026b §5.1) cites the real-Lumen shape distribution as the baseline against which Type 1 (repeated-hits) failure is measured. **Numbers in Wang 2026b §5.1 reflect an earlier dataset cut** (21,449 windows; `entropy_spike_recovery` 4.91%, `settled_presence` 47.19%). The current Hub artefact has 20,655 real windows with the distribution in the table above. The qualitative claim — that `entropy_spike_recovery` is rare relative to `settled_presence` and so the ratio of the two is a Type 1 indicator — is unchanged at this revision; the exact numbers should be re-cited from this card or the Wang 2026b §5.1 numbers updated to match.
+Versions 1.x of Wang 2026b (§5.1, cut in v2.0) cited the real-Lumen shape distribution as the baseline against which Type 1 (repeated-hits) failure is measured. **Those §5.1 numbers reflect an earlier dataset cut** (21,449 windows; `entropy_spike_recovery` 4.91%, `settled_presence` 47.19%). The current Hub artefact has 20,655 real windows with the distribution in the table above. The qualitative claim — that `entropy_spike_recovery` is rare relative to `settled_presence` and so the ratio of the two is a Type 1 indicator — is unchanged at this revision. Wang 2026b v2.0 no longer makes this claim.
 
-The 28.9% basin-flip rate (Wang 2026a §11.6, Wang 2026b §3.4) is computed on a **separate** dataset of state vectors (not trajectory windows) and is published as [`hikewa/unitares-verdict-counterfactual-v6.8`](https://huggingface.co/datasets/hikewa/unitares-verdict-counterfactual-v6.8). Do not attempt to reproduce the 28.9% number from this dataset — they are different artefacts.
+The 28.9% basin-flip rate (Wang 2026a §11.6; reproduced as 28.84% in Wang 2026b v2.0 §4.2) is computed on a **separate** dataset of state vectors (not trajectory windows) and is published as [`hikewa/unitares-verdict-counterfactual-v6.8`](https://huggingface.co/datasets/hikewa/unitares-verdict-counterfactual-v6.8). Do not attempt to reproduce the 28.9% number from this dataset — they are different artefacts.
 
 ---
 
@@ -181,7 +181,7 @@ The 28.9% basin-flip rate (Wang 2026a §11.6, Wang 2026b §3.4) is computed on a
 
 - **Re-identifying or profiling humans.** Lumen has no human user model; the dataset is sensor-driven physical state plus governance metrics. There is no human PII in the windows.
 - **Cross-agent generalisation claims.** This dataset is from one Raspberry Pi 4 in one physical environment. Class-conditional results from Wang 2026a Table 5 (5 agent classes) require their own data; this dataset speaks only for the Lumen class and only for the 39-day window covered.
-- **Fine-grained temporal claims past the dataset window.** Lumen has run for 118+ days as of Wang 2026b's drafting; this dataset is a 39-day slice (2026-01-11 to 2026-02-19). Behavioural claims on Lumen's full operational lifetime require pulling fresh data.
+- **Fine-grained temporal claims past the dataset window.** Lumen has run well past this window; this dataset is a 39-day slice (2026-01-11 to 2026-02-19). Behavioural claims on Lumen's full operational lifetime require pulling fresh data.
 - **Synthetic-window analysis as evidence about Lumen.** The 11,526 synthetic windows exist to balance class distribution for downstream modelling; treating them as observations of Lumen's behaviour is a category error. Always filter on `provenance == "lumen_real"` for any empirical claim about the agent.
 
 ### Biases, limitations, known gaps
