@@ -71,9 +71,9 @@ The EISV framework maps Lumen's continuous anima state to four governance dimens
 
 | Dimension | Symbol | Range | Lumen Mapping | Description |
 |-----------|--------|-------|---------------|-------------|
-| Energy | E | [0, 1] | warmth | Productive capacity; couples toward I, reduced by entropy cross-coupling |
-| Information Integrity | I | [0, 1] | clarity | Signal fidelity; boosted by coherence, reduced by entropy |
-| Entropy | S | [0, 1] | 1 - stability | Semantic uncertainty; decays naturally, rises with complexity and drift |
+| Energy | E | [0, 1] | warmth | Energy coordinate (observed warmth, not a measured capacity); couples toward I, reduced by entropy cross-coupling |
+| Information Integrity | I | [0, 1] | clarity | Integrity coordinate (observed clarity); boosted by coherence, reduced by entropy |
+| Entropy | S | [0, 1] | 1 - stability | Entropy coordinate (a variability reading, not semantic uncertainty); decays naturally, rises with complexity and drift |
 | Void | V | [0, 0.3] | (1 - presence) * 0.3 | Absence of engagement (scaled inverse presence) |
 
 All dimensions are continuous and computed at every state snapshot. First and second derivatives are computed via finite differences over sliding windows (assembler default: window_size=10, stride=5; dataset publisher uses window_size=20, stride=10).

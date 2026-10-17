@@ -16,7 +16,7 @@ datasets:
 
 A lightweight RandomForest ensemble distilled from the
 [EISV-Lumen Teacher](https://huggingface.co/hikewa/eisv-lumen-teacher)
-(fine-tuned Qwen2.5-0.5B). Achieves **0.986 coherence** on the EISV
+(LoRA on Qwen3-4B). Achieves **0.986 coherence** on the EISV
 expression-generation task while fitting in **~13 MB of JSON** with
 **zero external dependencies** -- only Python stdlib required. Designed
 to run on a Raspberry Pi 4 (Lumen's physical host).
@@ -52,7 +52,7 @@ token-1 twice).
 
 ## Results
 
-| Metric | Student (RF) | Teacher (Qwen2.5-0.5B) | Random Baseline |
+| Metric | Student (RF) | Teacher (Qwen3-4B LoRA) | Random Baseline |
 |---|---|---|---|
 | **Coherence** | **0.986** | 0.952 | 0.495 |
 | Token-1 agreement | 0.688 | -- | -- |
@@ -65,6 +65,11 @@ token-1 twice).
 > exact token choices ~30% of the time, the tokens it picks are still
 > coherent -- they belong to the same affinity region of EISV space. The
 > coherence metric rewards any valid expression, not exact match.
+>
+> The two coherence figures also come from different test sets: the
+> student's from 1,080 held-out teacher-labelled synthetic windows, the
+> teacher's from 500 real Lumen windows. Read the comparison as indicative,
+> not as a like-for-like result.
 
 ## Zero-Dependency Usage (recommended for edge)
 
@@ -141,7 +146,7 @@ outputs/student_small/
 
 ## Training Details
 
-- **Distillation source**: Teacher (Qwen2.5-0.5B LoRA v6, 0.952 coherence
+- **Distillation source**: Teacher (Qwen3-4B LoRA v6, 0.952 coherence
   on real Lumen trajectories)
 - **Data generation**: 4,320 synthetic EISV trajectories labeled by teacher
   inference (480 per shape x 9 shapes), plus 1,080 held-out test examples
@@ -153,7 +158,7 @@ outputs/student_small/
 
 ## Related
 
-- **Teacher model**: [hikewa/eisv-lumen-teacher](https://huggingface.co/hikewa/eisv-lumen-teacher) -- fine-tuned Qwen2.5-0.5B that generated the training labels
+- **Teacher model**: [hikewa/eisv-lumen-teacher](https://huggingface.co/hikewa/eisv-lumen-teacher) -- Qwen3-4B LoRA that generated the training labels
 - **Dataset**: [hikewa/unitares-eisv-trajectories](https://huggingface.co/datasets/hikewa/unitares-eisv-trajectories) -- EISV trajectory data from Lumen
 - **Explorer Space**: [hikewa/eisv-lumen-explorer](https://huggingface.co/spaces/hikewa/eisv-lumen-explorer) -- interactive demo
 

@@ -12,7 +12,6 @@ tags:
   - trajectory
   - embodied-ai
   - governance
-  - allostatic-load
   - unitares
   - lumen
 size_categories:
@@ -27,7 +26,7 @@ configs:
 
 # UNITARES EISV Trajectories (Lumen)
 
-Time-windowed four-dimensional state-vector trajectories from **Lumen**, a Raspberry Pi-embodied agent governed by the [UNITARES](https://github.com/CIRWEL/unitares) framework, plus class-balanced synthetic augmentation. Each window is labelled with one of nine dynamical-shape classes and an optional aligned primitive-token expression.
+Time-windowed four-dimensional state-vector trajectories from **Lumen**, a Raspberry Pi-embodied agent whose state estimates are recorded by [UNITARES](https://github.com/CIRWEL/unitares), plus class-balanced synthetic augmentation. Each window is labelled with one of nine dynamical-shape classes and an optional aligned primitive-token expression.
 
 Related papers from the same project. Their analyses use separate production exports; neither is computed on this dataset.
 
@@ -54,7 +53,7 @@ Related papers from the same project. Their analyses use separate production exp
 
 ## Dataset Summary
 
-Lumen is an embodied AI agent — a Raspberry Pi 4 running the [`anima-mcp`](https://github.com/CIRWEL/anima-mcp) software, with environmental sensors (BME280 temperature/humidity/pressure, VEML7700 light), a TFT display, and a primitive 15-token expression vocabulary. Lumen's continuous physical state is projected onto a four-dimensional informational manifold — the EISV state vector (E, I, S, V) — and the projection is sampled at sensor cadence.
+Lumen is an embodied AI agent — a Raspberry Pi 4 running the [`anima-mcp`](https://github.com/CIRWEL/anima-mcp) software, with environmental sensors (BME280 temperature/humidity/pressure, VEML7700 light), a TFT display, and a primitive 15-token expression vocabulary. Lumen's sensor readings and system metrics are mapped to the four EISV coordinates (E, I, S, V), and the mapping is sampled at sensor cadence.
 
 This dataset captures **20-step sliding-window trajectories** of that EISV state, classified into nine canonical dynamical shapes (`settled_presence`, `convergence`, `entropy_spike_recovery`, `basin_transition_up/down`, `rising_entropy`, `falling_energy`, `void_rising`, `drift_dissonance`). It is published to support:
 
@@ -111,13 +110,13 @@ JSON-string columns are kept as `string` rather than nested-list types so the da
 
 ## EISV framework
 
-EISV is the four-dimensional informational state vector that UNITARES uses to track agents, derived from the governance model of Wang 2026a §4. For Lumen, the four dimensions are computed from physical sensor readings and system metrics:
+EISV is the four-coordinate runtime state estimate that UNITARES keeps for each agent (Wang 2026a §4; current wording in the [EISV proprioception contract](https://github.com/cirwel/unitares/blob/master/docs/ontology/eisv-proprioception-contract.md)). The coordinate names are labels for what each value is computed from. They are not measurements of physical energy, entropy or information. For Lumen, the four coordinates are computed from physical sensor readings and system metrics:
 
 | Symbol | Range | Lumen mapping | Description |
 |---|---|---|---|
-| **E** (Energy) | `[0, 1]` | `warmth` (sensor-derived) | Productive capacity. Couples toward `I` via `α(I − E)`; reduced by entropy cross-coupling. |
-| **I** (Information Integrity) | `[0, 1]` | `clarity` (sensor-derived) | Signal fidelity. Boosted by coherence `C(V, Θ)`; reduced by entropy. |
-| **S** (Entropy) | `[0, 1]` | `1 − stability` | Semantic uncertainty. Decays naturally; rises with complexity, drift, ethical drift. |
+| **E** (Energy) | `[0, 1]` | `warmth` (sensor-derived) | Observed `warmth`, used as the energy coordinate; not a measured capacity. In the UNITARES ODE, E couples toward `I` via `α(I − E)` and is reduced by entropy cross-coupling. |
+| **I** (Information Integrity) | `[0, 1]` | `clarity` (sensor-derived) | Observed `clarity`, used as the integrity coordinate. In the ODE, I is boosted by coherence `C(V, Θ)` and reduced by entropy. |
+| **S** (Entropy) | `[0, 1]` | `1 − stability` | `1 − stability`, used as the entropy coordinate: a variability reading, not semantic uncertainty or Shannon entropy. In the ODE, S decays and rises with complexity and drift. |
 | **V** (Void) | `[0, 0.3]` | `(1 − presence) × 0.3` | Absence-of-engagement proxy at the observation layer. |
 
 > **Range note.** These are *observation-layer* values from Lumen's sensors. The UNITARES governance ODE evolves `S` to `[0, 2]` and `V` to `[−2, 2]` as a signed E−I imbalance integrator (Wang 2026a Appendix A); the windows in this dataset use the sensor-layer ranges above. The `V` coordinate here is **non-negative by construction** and is not the signed integrator coordinate cited as `V` in Wang 2026a / Wang 2026b §5.3 — those papers report governance-layer `V` for the Lumen case study, computed from the same agent state but distinct in sign convention.
@@ -204,12 +203,12 @@ This dataset captures the internal state of an AI agent, not human behaviour. It
 The dataset is the Layer-1 substrate of the **EISV-Lumen** three-layer benchmark. Companion artefacts:
 
 - **Repository:** [CIRWEL/eisv-lumen](https://github.com/CIRWEL/eisv-lumen) — full pipeline (Layer 1 dataset, Layer 2 rule-based expression generator, Layer 3 fine-tuning + distillation), 399 tests, evaluation framework.
-- **Teacher model:** [`hikewa/eisv-lumen-teacher`](https://huggingface.co/hikewa/eisv-lumen-teacher) — Qwen3-4B + LoRA, 0.952 coherence on real Lumen windows.
+- **Teacher model:** [`hikewa/eisv-lumen-teacher`](https://huggingface.co/hikewa/eisv-lumen-teacher) — Qwen3-4B + LoRA, 0.952 expression coherence on real Lumen windows (a token-to-shape fit score, unrelated to UNITARES coherence).
 - **Student model:** [`hikewa/eisv-lumen-student`](https://huggingface.co/hikewa/eisv-lumen-student) — RandomForest distillation; on-device variant runs on Lumen's Pi.
 - **Interactive demo:** [EISV-Lumen Explorer](https://huggingface.co/spaces/hikewa/eisv-lumen-explorer).
 - **Sibling dataset:** [`hikewa/unitares-verdict-counterfactual-v6.8`](https://huggingface.co/datasets/hikewa/unitares-verdict-counterfactual-v6.8) — state-vector basin-flip counterfactual cited in Wang 2026a §11.6.
 - **Lumen substrate:** [CIRWEL/anima-mcp](https://github.com/CIRWEL/anima-mcp) — the Pi-side software running on Lumen.
-- **Governance framework:** [CIRWEL/unitares](https://github.com/CIRWEL/unitares) — the MCP server that records EISV states and drives governance.
+- **Governance framework:** [CIRWEL/unitares](https://github.com/CIRWEL/unitares) — the MCP server that records EISV state estimates.
 
 ---
 

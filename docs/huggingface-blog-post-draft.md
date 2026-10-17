@@ -10,6 +10,13 @@
 
 ---
 
+> **Claim status (2026-10-16): unpublished draft.** Drafted in February 2026 and never published; kept as written.
+> Parts of its framing go further than the current wording standard, the [EISV proprioception contract](https://github.com/cirwel/unitares/blob/master/docs/ontology/eisv-proprioception-contract.md).
+> EISV coordinates are runtime state estimates mapped from sensor readings and system metrics. They are not
+> "empirically calibrated" physical variables, and S is a variability reading, not semantic uncertainty. The
+> gas comparison in the introduction is an analogy, not a claim about Lumen's physics. Revise those passages
+> before any publication.
+
 ## Abstract
 
 We introduce **EISV-Lumen**, a three-layer system for trajectory-aware expression in embodied AI. Rather than reacting to current state snapshots, Lumen — a Raspberry Pi-based entity with sensors, LEDs, and a primitive 15-token vocabulary — expresses the *shape* of its dynamics: whether its internal trajectory is rising toward engagement, falling into quiescence, spiking in entropy, or settling into stable presence.
@@ -47,7 +54,7 @@ This is the question EISV-Lumen explores through **Lumen**, a Raspberry Pi-based
 - **S** (Entropy): semantic uncertainty, environmental variance, dissonance
 - **V** (Void): E-I imbalance accumulation, disconnection, quiescence
 
-These aren't emotion labels or sentiment scores. They're empirically calibrated behavioral-state variables computed from observable signals — temperature, CPU load, sensor coverage, interaction presence. EISV is to Lumen what temperature and pressure are to a gas: measurable properties that describe its computational "physics."
+These aren't emotion labels or sentiment scores. They're empirically calibrated behavioral-state variables computed from observable signals — temperature, CPU load, sensor coverage, interaction presence. EISV is to Lumen what temperature and pressure are to a gas: measurable properties that describe its computational "physics." *(Analogy only; see the claim-status note above.)*
 
 The challenge is expression. Given an EISV trajectory window (4-20 steps, spanning seconds to minutes of Lumen's life), generate 1-3 tokens from a 15-token primitive vocabulary that capture the trajectory's *shape* — not just where it is, but where it's going.
 
