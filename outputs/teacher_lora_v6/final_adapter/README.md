@@ -30,7 +30,7 @@ This is the **teacher model** in a teacher-student pipeline. Its outputs are dis
 | **Dropout** | 0.1 |
 | **Target modules** | q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj |
 | **Task type** | CAUSAL_LM |
-| **Training examples** | 2,880 (50% real + 50% synthetic) |
+| **Training examples** | 2,880; drawn from an approximately 50/50 real/synthetic blend |
 | **Training steps** | 1,260 |
 | **Adapter size** | 126 MB |
 | **PEFT version** | 0.18.1 |
@@ -73,7 +73,7 @@ A trajectory is a time-window of EISV values. The shape classifier identifies 9 
 | `void_rising` | Increasing V coordinate | 0.3% |
 | `drift_dissonance` | Conflicting dimensional movements | synthetic only |
 
-The distribution is heavily skewed toward `settled_presence` and `convergence` in the historical corpus; this distribution alone does not establish device health or agent capability. The training set uses 50/50 real+synthetic blending to ensure the model sees enough rare shapes.
+The distribution is heavily skewed toward `settled_presence` and `convergence` in the historical corpus; this distribution alone does not establish device health or agent capability. The training pipeline uses approximately 50/50 real+synthetic blending to ensure the model sees enough rare shapes.
 
 ## Expression Vocabulary
 
