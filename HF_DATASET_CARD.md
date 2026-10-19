@@ -163,7 +163,7 @@ The dominant disagreement (~5,138 windows in the 4-step case) is `settled_presen
 
 Versions 1.x of Wang 2026b (§5.1, cut in v2.0) cited the real-Lumen shape distribution as the baseline against which Type 1 (repeated-hits) failure is measured. **Those §5.1 numbers reflect an earlier dataset cut** (21,449 windows; `entropy_spike_recovery` 4.91%, `settled_presence` 47.19%). The current Hub artefact has 20,655 real windows with the distribution in the table above. The qualitative claim — that `entropy_spike_recovery` is rare relative to `settled_presence` and so the ratio of the two is a Type 1 indicator — is unchanged at this revision. Wang 2026b v2.0 no longer makes this claim.
 
-The 28.9% basin-flip rate (Wang 2026a §11.6; reproduced as 28.84% in Wang 2026b v2.0 §4.2) is computed on a **separate** dataset of state vectors (not trajectory windows) and is published as [`hikewa/unitares-verdict-counterfactual-v6.8`](https://huggingface.co/datasets/hikewa/unitares-verdict-counterfactual-v6.8). Do not attempt to reproduce the 28.9% number from this dataset — they are different artefacts.
+The original 28.9% basin-flip table (Wang 2026a §11.6; 13,310 observations) uses a **separate** dataset of state vectors, not these trajectory windows. The surviving export published as [`hikewa/unitares-verdict-counterfactual-v6.8`](https://huggingface.co/datasets/hikewa/unitares-verdict-counterfactual-v6.8) is a nearby pull of 13,292 rows, with 28.8% stored-label flips; it is not an exact archive of the original table. Wang 2026b v2.0 §4.2 recomputes 28.84% on that nearby export. Do not attempt to reproduce either result from this trajectory dataset — they are different artefacts.
 
 ---
 

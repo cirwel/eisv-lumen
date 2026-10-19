@@ -38,34 +38,42 @@ This is the **teacher model** in a teacher-student pipeline. Its outputs are dis
 
 ## What is EISV?
 
-EISV is a four-dimensional state space computed from real sensor readings on a Raspberry Pi 4 (BrainCraft HAT with BME280, VEML7700, CPU telemetry):
+EISV is a four-coordinate state estimate. In the real-data portion of this model's training pipeline, the coordinates are derived from Lumen's physical sensors and computational telemetry. The training set also includes synthetic trajectories; sensor provenance does not apply to those examples.
 
-| Dimension | Name | What it captures | Source signals |
-|-----------|------|------------------|---------------|
-| **E** | Energy | Warmth and capacity | CPU temperature, ambient temperature, neural beta+gamma |
-| **I** | Information Integrity | Clarity and coherence | Prediction accuracy, neural alpha, world light, sensor coverage |
-| **S** | Entropy | Uncertainty and disorder | Humidity deviation, memory usage, missing sensors, pressure deviation |
-| **V** | Void | Disengagement and absence | Inverse of memory, CPU, and disk availability |
+The [companion dataset card](https://huggingface.co/datasets/hikewa/unitares-eisv-trajectories/blob/6e9ab8aa3e20290c47477a15b23021b7ae7c8421/README.md) documents the Lumen observation-layer mapping:
 
-These are not simulated or synthetic dimensions — they are derived from physical sensors and computational telemetry on a real device, sampled every 30 seconds.
+| Dimension | Name | Computed coordinate |
+|-----------|------|---------------------|
+| **E** | Energy | Sensor-derived `warmth`; not measured productive capacity |
+| **I** | Information Integrity | Sensor-derived `clarity`; not validated reasoning quality or integrity |
+| **S** | Entropy | `1 − stability`; not semantic uncertainty or Shannon entropy |
+| **V** | Void | `(1 − presence) × 0.3`; an observation-layer proxy, not the signed governance-layer imbalance integrator |
+
+The coordinate names and expression tokens are modeling conventions, not measurements of subjective experience. Expression coherence below is a token-to-shape fit score, distinct from UNITARES governance coherence; it does not validate safety or reasoning quality.
+
+### Training provenance and sampling cadence
+
+The v6 training configuration describes a blend of 1,803 real-derived and 1,797 synthetic examples before splitting. The retained local files contain 2,880 training, 360 validation, and 360 test examples. The linked Hub dataset is a larger trajectory-window corpus, not the 2,880-example training split itself.
+
+The pinned companion dataset card reports typical sensor-driven intervals of approximately 2 seconds, with actual timestamps in each window. The earlier 30-second claim in this model card was not tied to a documented sampling or downsampling stage and has been removed. This dataset-card revision documents the coordinate mapping and corpus; it is **not** a verified pin of the teacher's original training input. The retained formatted training files contain text, shape, pattern, and messages but no source timestamps or Hub revision, so they do not establish the original training-window cadence or exact upstream dataset cut.
 
 ## Trajectory Shapes
 
-A trajectory is a time-window of EISV values. The shape classifier identifies 9 distinct patterns:
+A trajectory is a time-window of EISV values. The shape classifier identifies 9 patterns. The frequencies below are approximate historical corpus summaries, not counts for the current Hub dataset or the balanced training split. Shape names describe coordinate patterns, not independently measured psychological states:
 
 | Shape | Description | Real-data frequency |
 |-------|-------------|-------------------|
-| `settled_presence` | Stable, grounded state with low entropy and void | 47% |
+| `settled_presence` | Small coordinate changes with low S and V | 47% |
 | `convergence` | Dimensions moving toward alignment | 41% |
 | `entropy_spike_recovery` | Sharp entropy increase followed by return to baseline | 5% |
 | `basin_transition_up` | Shift from lower to higher energy basin | 2% |
 | `basin_transition_down` | Shift from higher to lower energy basin | 2% |
-| `rising_entropy` | Sustained increase in uncertainty | 1.5% |
-| `falling_energy` | Gradual energy decline | 1.5% |
-| `void_rising` | Increasing disengagement | 0.3% |
+| `rising_entropy` | Sustained increase in the S coordinate | 1.5% |
+| `falling_energy` | Gradual decline in the E coordinate | 1.5% |
+| `void_rising` | Increasing V coordinate | 0.3% |
 | `drift_dissonance` | Conflicting dimensional movements | synthetic only |
 
-The distribution is heavily skewed toward `settled_presence` and `convergence` because a well-functioning Pi is usually stable. The training set uses 50/50 real+synthetic blending to ensure the model sees enough rare shapes.
+The distribution is heavily skewed toward `settled_presence` and `convergence` in the historical corpus; this distribution alone does not establish device health or agent capability. The training set uses 50/50 real+synthetic blending to ensure the model sees enough rare shapes.
 
 ## Expression Vocabulary
 
@@ -151,7 +159,7 @@ print(result)
 
 ## Related
 
-- **Dataset**: [hikewa/unitares-eisv-trajectories](https://huggingface.co/datasets/hikewa/unitares-eisv-trajectories) — 2,880 trajectory-expression pairs used for training
+- **Dataset**: [hikewa/unitares-eisv-trajectories](https://huggingface.co/datasets/hikewa/unitares-eisv-trajectories) — companion trajectory-window corpus; see the training-provenance limits above
 - **Student model**: [hikewa/eisv-lumen-student](https://huggingface.co/hikewa/eisv-lumen-student) — distilled RandomForest that runs on Raspberry Pi 4
 - **Demo**: [hikewa/eisv-lumen-explorer](https://huggingface.co/spaces/hikewa/eisv-lumen-explorer) — interactive Space to explore trajectories and expressions
 
