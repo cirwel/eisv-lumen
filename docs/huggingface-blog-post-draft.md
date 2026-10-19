@@ -90,7 +90,7 @@ The story has three acts. Act one: iterative neural improvement approaches the s
 6. **Distilled deployment**: RandomForest student at 0.924 coherence in 1.5 MB for Raspberry Pi 4
 7. **Deployed system**: Trajectory-aware expression running on embodied hardware
 
-The code, data, and model weights are available at [github.com/CIRWEL/eisv-lumen](https://github.com/CIRWEL/eisv-lumen). Models are published on HuggingFace: [teacher](https://huggingface.co/hikewa/eisv-lumen-teacher), [student](https://huggingface.co/hikewa/eisv-lumen-student), and an [interactive explorer](https://huggingface.co/spaces/hikewa/eisv-lumen-explorer) lets you visualize trajectories and expressions. The broader UNITARES governance framework (which produces the EISV trajectories) remains proprietary, but the expression pipeline is fully open.
+The code, data, and model weights are available at [github.com/CIRWEL/eisv-lumen](https://github.com/CIRWEL/eisv-lumen). Models are published on HuggingFace: [teacher](https://huggingface.co/hikewa/eisv-lumen-teacher), [student](https://huggingface.co/hikewa/eisv-lumen-student), and an [interactive explorer](https://huggingface.co/spaces/hikewa/eisv-lumen-explorer) lets you visualize trajectories and expressions. The UNITARES framework that produces the EISV trajectories is Apache-2.0 at [github.com/cirwel/unitares](https://github.com/cirwel/unitares). Regenerating the dataset itself needs a live UNITARES deployment receiving Lumen's check-ins; the published dataset and the expression pipeline can be used without one.
 
 ---
 
@@ -712,8 +712,8 @@ This suggests that the shape-token affinity structure is *simpler than the teach
 
 ### 6.4 Limitations
 
-**Proprietary EISV computation**
-The UNITARES governance framework that produces EISV trajectories is closed-source. This limits reproducibility of the *dataset generation* process, though the dataset itself is public.
+**Dataset regeneration needs a live deployment**
+The UNITARES framework that produces EISV trajectories is Apache-2.0 at [github.com/cirwel/unitares](https://github.com/cirwel/unitares). Regenerating the dataset needs a live UNITARES deployment receiving Lumen's check-ins, which limits reproducibility of the *dataset generation* process, though the dataset itself is public.
 
 **Single entity (Lumen only)**
 All trajectories come from one Raspberry Pi 4 in Colorado. The shape classes and affinities may not generalize to other embodied systems with different sensors or physical substrates.
