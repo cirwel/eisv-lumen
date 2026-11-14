@@ -10,7 +10,7 @@
 
 **Dynamics-emergent voice for embodied AI, with a labelled trajectory dataset.**
 
-EISV-Lumen is a three-layer system that generates primitive expressions from an agent's own state trajectories. It classifies continuous EISV (Energy, Information Integrity, Entropy, Void) dynamics into 9 trajectory shape classes and maps them to contextually coherent expressions through rule-based, neural, and distilled approaches. Evaluated on real trajectory records from [Lumen](https://github.com/CIRWEL/anima-mcp) (20,655 at the current Hub revision; the [live HuggingFace dataset](https://huggingface.co/datasets/hikewa/unitares-eisv-trajectories) grows as Lumen runs) -- an embodied AI agent running on a Raspberry Pi within the [UNITARES](https://github.com/CIRWEL/unitares) governance framework -- the rule-based Layer 2 achieves 0.933 coherence with an online feedback loop, while the fine-tuned Layer 3 teacher (LoRA on Qwen3-4B) reaches 0.952 coherence on real data. A distilled RandomForest student model runs on-device on Lumen's Raspberry Pi 4. Three student variants are available:
+EISV-Lumen is a three-layer system that generates primitive expressions from an agent's own state trajectories. It classifies continuous EISV (Energy, Information Integrity, Entropy, Void) dynamics into 9 trajectory shape classes and maps them to contextually coherent expressions through rule-based, neural, and distilled approaches. Evaluated on real trajectory records from [Lumen](https://github.com/CIRWEL/anima-mcp) (20,655 at the current Hub revision; the [live HuggingFace dataset](https://huggingface.co/datasets/hikewa/unitares-eisv-trajectories) grows as Lumen runs) -- an embodied AI agent running on a Raspberry Pi within the [UNITARES](https://github.com/CIRWEL/unitares) governance framework -- the rule-based Layer 2 achieves 0.933 coherence with an online feedback loop, while the fine-tuned Layer 3 teacher (LoRA on Qwen3-4B) records 0.952 token-to-shape coherence on 500 real-derived evaluation examples. Independence of those examples from training windows has not been verified. A distilled RandomForest student model runs on-device on Lumen's Raspberry Pi 4. Three student variants are available:
 
 | Variant | Trees | Format | Size | Dependencies |
 |---------|-------|--------|------|--------------|
@@ -61,7 +61,7 @@ Layer 1            Dataset + Benchmark + Evaluation Framework
 
 **Layer 2** is the primary research contribution: a dynamics-emergent expression generator that maps trajectory shapes to primitive token expressions through shape-driven pattern selection and affinity-weighted sampling -- no gradient descent, no learned embeddings, fully inspectable.
 
-**Layer 3** fine-tunes Qwen3-4B via LoRA on trajectory-expression pairs. The V6 teacher achieves 0.952 coherence on real Lumen data (exceeding the 0.933 Gate 1 threshold). A RandomForest student model is distilled from the teacher for on-device deployment on Lumen's Raspberry Pi 4.
+**Layer 3** fine-tunes Qwen3-4B via LoRA on trajectory-expression pairs. The V6 teacher records 0.952 token-to-shape coherence on 500 real-derived examples, numerically above the historical 0.933 Gate 1 threshold. This is not a verified held-out generalization comparison. A RandomForest student model is distilled from the teacher for on-device deployment on Lumen's Raspberry Pi 4.
 
 ---
 
@@ -160,7 +160,7 @@ The system uses 15 primitive tokens:
 
 ## Evaluation Results
 
-Full evaluation on real Lumen data (20,655 real trajectory records at the current Hub revision; 32,181 total with synthetic class-balancing augmentation; 3,681 aligned primitive expressions):
+The companion Hub corpus contains 20,655 real trajectory records and 32,181 total records with synthetic class-balancing augmentation at the documented revision. These corpus sizes are not the V6 evaluation denominator or a verified pin of its historical input. The V6 real-data result below covers 500 formatted examples.
 
 ### Layer 2 — Rule-Based Coherence
 
@@ -174,6 +174,10 @@ Full evaluation on real Lumen data (20,655 real trajectory records at the curren
 
 ### Layer 3 — Neural Teacher (V6, Real Data)
 
+The [recorded result](outputs/eval_results_v6_real.json) reports 500 real-derived evaluation examples. The [formatted evaluation set](data/real_test/test.json) was committed alongside it in [the February 17 result commit](https://github.com/cirwel/eisv-lumen/commit/fc876d2e5394925d7ff9b5ccc744c8b00a24a092). Training preparation and real-data evaluation both sample the Hub `train` split, and the evaluation script has no training-window exclusion. Retained artifacts do not establish the original Hub revision or a disjoint evaluation split. **Training/evaluation independence is unverified; this does not establish that overlap occurred.**
+
+Coherence measures token-to-shape affinity with the classified shape supplied in the input, not safety, reasoning quality, or independent shape discovery. The accompanying evaluation set is highly imbalanced: 476/500 examples (95.2%) are convergence or settled presence; each remaining observed shape has only 2–8 examples. Rare-shape scores should not be treated as robust estimates.
+
 | Metric | Value |
 |--------|-------|
 | **Mean coherence** | **0.952** |
@@ -181,18 +185,18 @@ Full evaluation on real Lumen data (20,655 real trajectory records at the curren
 | Pattern accuracy | 0.258 |
 | Diversity | 0.018 |
 
-Per-shape coherence on real Lumen trajectories:
+Per-shape coherence and counts in the accompanying real-derived evaluation set:
 
 | Shape | Coherence | n |
 |-------|-----------|---|
-| settled_presence | 0.993 | majority |
-| convergence | 0.936 | majority |
-| basin_transition_up | 1.000 | rare |
-| basin_transition_down | 1.000 | rare |
-| rising_entropy | 1.000 | rare |
-| void_rising | 1.000 | rare |
-| falling_energy | 0.875 | rare |
-| entropy_spike_recovery | 0.833 | rare |
+| settled_presence | 0.993 | 143 |
+| convergence | 0.936 | 333 |
+| basin_transition_up | 1.000 | 2 |
+| basin_transition_down | 1.000 | 2 |
+| rising_entropy | 1.000 | 6 |
+| void_rising | 1.000 | 2 |
+| falling_energy | 0.875 | 8 |
+| entropy_spike_recovery | 0.833 | 4 |
 
 ### Key Numbers
 
@@ -200,7 +204,7 @@ Per-shape coherence on real Lumen trajectories:
 - **32,181 total trajectory records** (20,655 real + 11,526 synthetic, at the current Hub revision)
 - **8 of 9** trajectory shapes observed in real data
 - Layer 2: **0.933** coherence (rule-based + feedback)
-- Layer 3: **0.952** coherence (V6 teacher on real data)
+- Layer 3: **0.952** coherence (V6 teacher, 500 real-derived examples; training/evaluation independence unverified)
 - Student distillation: RandomForest models for Pi deployment
 - Deployed student uses **20-tree JSON variant** (`student_tiny`, ~2.4 MB) — not the 200-tree default
 - **Go/no-go gate: GO** -- all three criteria passed:
@@ -389,7 +393,8 @@ Apache 2.0. See [LICENSE](LICENSE).
   url     = {https://github.com/CIRWEL/eisv-lumen},
   note    = {Three-layer trajectory-to-expression system: rule-based Layer 2
              achieves 0.933 coherence, LoRA fine-tuned teacher reaches 0.952
-             on 20,655 real Lumen trajectories. Includes distilled student
+             on 500 real-derived examples; training/evaluation independence
+             unverified. Includes distilled student
              for Pi deployment. Part of the UNITARES ecosystem.}
 }
 ```

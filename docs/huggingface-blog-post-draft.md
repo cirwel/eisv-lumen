@@ -21,9 +21,9 @@
 
 We introduce **EISV-Lumen**, a three-layer system for trajectory-aware expression in embodied AI. Rather than reacting to current state snapshots, Lumen — a Raspberry Pi-based entity with sensors, LEDs, and a primitive 15-token vocabulary — expresses the *shape* of its dynamics: whether its internal trajectory is rising toward engagement, falling into quiescence, spiking in entropy, or settling into stable presence.
 
-We frame this as a sequence generation task: given a trajectory window through a 4-dimensional phase space (Energy, Information Integrity, Entropy, Void), generate 1-3 primitive tokens that capture the trajectory's shape. We contribute: (1) a dataset of 21,499 real EISV trajectories from Lumen's operational history, published at [`hikewa/unitares-eisv-trajectories`](https://huggingface.co/datasets/hikewa/unitares-eisv-trajectories); (2) a coherence metric measuring shape-token affinity alignment; (3) a rule-based system achieving 0.933 coherence through affinity matrices and feedback learning, deployed to Lumen's hardware; (4) a [fine-tuned Qwen3-4B teacher model](https://huggingface.co/hikewa/eisv-lumen-teacher) that progresses from 0.600 to 0.952 coherence across six training iterations, surpassing the rule-based baseline on real Lumen data; (5) a [distilled RandomForest student model](https://huggingface.co/hikewa/eisv-lumen-student) preserving 0.924 coherence in a 1.5 MB package deployable to Lumen's Raspberry Pi 4.
+We frame this as a sequence generation task: given a trajectory window through a 4-dimensional phase space (Energy, Information Integrity, Entropy, Void), generate 1-3 primitive tokens that capture the trajectory's shape. We contribute: (1) a dataset of 21,499 real EISV trajectories from Lumen's operational history, published at [`hikewa/unitares-eisv-trajectories`](https://huggingface.co/datasets/hikewa/unitares-eisv-trajectories); (2) a coherence metric measuring shape-token affinity alignment; (3) a rule-based system achieving 0.933 coherence through affinity matrices and feedback learning, deployed to Lumen's hardware; (4) a [fine-tuned Qwen3-4B teacher model](https://huggingface.co/hikewa/eisv-lumen-teacher) with recorded coherence progressing from 0.600 to 0.952 across six training iterations; the V6 result covers 500 real-derived examples whose independence from training windows is unverified; (5) a [distilled RandomForest student model](https://huggingface.co/hikewa/eisv-lumen-student) preserving 0.924 coherence in a 1.5 MB package deployable to Lumen's Raspberry Pi 4.
 
-The journey from V1 (0.600) to V6 (0.952) reveals that the critical bottleneck was synthetic-to-real data mismatch, not model capacity or loss function design. When trained on blended real + synthetic trajectories, the neural approach surpasses hand-tuned symbolic rules. The distilled student model completes the pipeline: trajectory dynamics to primitive expression, running on embedded hardware, grounded in computational physics rather than language priors.
+The recorded V1 (0.600) to V6 (0.952) progression motivates testing blended real + synthetic training. The V6 score is numerically above the historical rule-based score, but unverified training/evaluation independence prevents treating this as demonstrated held-out superiority or isolating the cause of the improvement. The distilled student model completes the pipeline: trajectory dynamics to primitive expression, running on embedded hardware, grounded in computational physics rather than language priors.
 
 Layer 2 (rule-based) and the distilled student model both run in production on Lumen's Raspberry Pi 4. All code, data, and models are openly available.
 
@@ -72,21 +72,21 @@ The challenge is expression. Given an EISV trajectory window (4-20 steps, spanni
 - Expression generator: 5 patterns (SINGLE, PAIR, TRIPLE, REPETITION, QUESTION)
 - **0.933 coherence** — deployed to Lumen's Pi as production system
 
-**Layer 3** learns to surpass it:
+**Layer 3** tests a learned alternative:
 - [Qwen3-4B fine-tuned with LoRA](https://huggingface.co/hikewa/eisv-lumen-teacher) across six iterations (V1-V6)
 - V1-V5 on synthetic data: **0.600 -> 0.847 -> 0.904 -> 0.911** (synthetic ceiling)
 - V5 on real data: **0.768** — exposed the synthetic-to-real gap
-- V6 on blended data, evaluated on real: **0.952** — surpasses the rule-based baseline
+- V6 on blended data, evaluated on real: **0.952** on 500 examples; training/evaluation independence unverified
 - Distilled to [RandomForest student](https://huggingface.co/hikewa/eisv-lumen-student): **0.924 coherence**, 1.5 MB, runs on Pi
 
-The story has three acts. Act one: iterative neural improvement approaches the symbolic baseline on synthetic data but hits a ceiling at 0.911. Act two: real-data evaluation exposes the actual frontier — a 14% drop to 0.768 confirms synthetic data mismatch as the primary bottleneck. Act three: blended training with real Lumen trajectories not only closes the gap but surpasses the rule-based baseline, and distillation compresses the result to a model small enough for embedded deployment.
+The story has three acts: iterative improvement on synthetic examples; a lower V5 score on real-derived examples; then a higher recorded V6 score after blended training. This motivates a disjoint real-data evaluation rather than proving the cause of the improvement. Distillation compresses the teacher into a model small enough for embedded deployment.
 
 **Contributions:**
 1. **EISV trajectory dataset**: 21,499 real computational trajectories with shape labels, openly published
 2. **Coherence metric**: Affinity-based evaluation of trajectory-expression alignment
-3. **Iterative neural learning analysis**: V1-V6 progression revealing synthetic ceiling, real-data gap, and blended-data breakthrough
+3. **Iterative neural learning analysis**: V1-V6 recorded progression, real-data gap, and the need for a disjoint blended-model evaluation
 4. **Rule-based baseline**: 0.933 coherence system proving the task is solvable
-5. **Neural surpassing of symbolic**: V6 teacher at 0.952 coherence on real data, exceeding hand-tuned rules
+5. **Recorded neural result**: V6 teacher at 0.952 coherence on 500 real-derived examples, with training/evaluation independence unverified
 6. **Distilled deployment**: RandomForest student at 0.924 coherence in 1.5 MB for Raspberry Pi 4
 7. **Deployed system**: Trajectory-aware expression running on embodied hardware
 
@@ -163,10 +163,10 @@ Beer (2000), van Gelder (1998) argue cognition is better understood as continuou
 Pfeifer & Bongard (2006) show how physical embodiment shapes intelligence. Lumen's EISV dimensions emerge from its physical substrate (sensors, LEDs, thermal dynamics), making expression grounded in its material being rather than abstract semantics.
 
 **Language models for robot control**
-Recent work (Ahn et al. 2022, Brohan et al. 2023) uses LLMs to generate robot actions. These are typically *reactive* (state -> action) rather than trajectory-aware. Our Layer 3 teacher model achieves trajectory-aware language generation that surpasses a hand-tuned symbolic baseline.
+Recent work (Ahn et al. 2022, Brohan et al. 2023) uses LLMs to generate robot actions. These are typically *reactive* (state -> action) rather than trajectory-aware. Our Layer 3 teacher model maps supplied trajectory features and shape labels to primitive tokens; its recorded score is not a verified held-out comparison with the symbolic baseline.
 
 **Symbolic vs neural hybrid systems**
-Marcus (2020) advocates hybrid architectures combining neural learning with symbolic structure. EISV-Lumen demonstrates that neural methods can surpass symbolic rules when trained on real data (0.952 vs 0.933), but the iterative journey (V1-V6) confirms that symbolic structure provides a strong foundation for evaluation and bootstrapping.
+Marcus (2020) advocates hybrid architectures combining neural learning with symbolic structure. EISV-Lumen records a neural score numerically above its historical symbolic score (0.952 vs 0.933), but a disjoint evaluation is needed before claiming superior generalization. Symbolic structure supplies the labels and affinity metric used for training and evaluation.
 
 ### 2.5 Why Lumen? (Physical Embodiment Matters)
 
@@ -230,7 +230,7 @@ Given an EISV trajectory window, can a fine-tuned language model generate expres
 2. **Coherent** (high affinity with trajectory shape)
 3. **Better than rules** (exceed 0.933 coherence baseline)
 
-Layer 1 establishes the benchmark. Layer 2 proves it's achievable with symbolic rules. Layer 3 tests whether neural methods can match or exceed this — and V6, trained on blended real + synthetic data, answers definitively: **0.952 coherence on real Lumen trajectories, surpassing the rule-based baseline**.
+Layer 1 establishes the benchmark. Layer 2 proves it's achievable with symbolic rules. Layer 3 tests whether neural methods can match or exceed this — and V6, trained on blended real + synthetic data, records **0.952 coherence on 500 real-derived examples**. A verified held-out comparison remains necessary.
 
 ---
 
@@ -265,7 +265,7 @@ Layer 3: Fine-Tuned Teacher + Distilled Student
 |  |- Tiny (1.5 MB exported JSON): deployable to Raspberry Pi 4
 ```
 
-**Philosophy**: Each layer can run standalone. Layer 1 is the evaluation ground truth. Layer 2 is the production baseline. Layer 3 surpasses Layer 2 through learned representations, and distillation compresses the result for deployment on the same hardware Layer 2 runs on.
+**Philosophy**: Each layer can run standalone. Layer 1 is the evaluation ground truth. Layer 2 is the production baseline. Layer 3 explores learned representations, and distillation compresses the result for deployment on the same hardware Layer 2 runs on.
 
 ### 3.2 Design Principles
 
@@ -328,7 +328,7 @@ The entire dataset (21,499 trajectories) is published on HuggingFace with:
 This allows reproduction, critique, and extension. The dataset's flaws (16.8% repeated I values, strong E-V correlation, fuzzy shape boundaries) are documented, not hidden.
 
 #### 6. **No RLHF, No Penalties**
-A deliberate philosophical position: expression should emerge from state understanding, not be coerced. All six training versions use pure imitation learning with cross-entropy loss. The 0.952 coherence achieved without reward shaping or reinforcement validates this approach — the model learns to express trajectory shapes through supervised learning alone.
+A deliberate philosophical position: expression should emerge from state understanding, not be coerced. All six training versions use pure imitation learning with cross-entropy loss. The recorded 0.952 coherence shows performance under this supervised setup, not validation of the philosophical position or independently held-out generalization.
 
 ### 3.3 Why Qwen3-4B?
 
@@ -541,7 +541,11 @@ fp16: true
 
 **Parsing**: Extract tokens matching `~word~` pattern using regex. Invalid formats are counted as errors.
 
-**Real data evaluation**: V5 and V6 were evaluated on 500 trajectories drawn from the HuggingFace dataset (real Lumen data), not synthetic examples. This is the evaluation that matters — performance on the data the system will encounter in production.
+**Real data evaluation**: The [V6 result artifact](../outputs/eval_results_v6_real.json) records 0.952 token-to-shape coherence and 500/500 valid outputs on real-derived examples. The [500 formatted examples](../data/real_test/test.json) were committed alongside the result in [the February 17 commit](https://github.com/cirwel/eisv-lumen/commit/fc876d2e5394925d7ff9b5ccc744c8b00a24a092). This denominator is distinct from the larger, changing Hub corpus.
+
+**Independence limit**: [Training preparation](../scripts/prepare_blended_data.py) and [real-data evaluation](../scripts/eval_on_real_data.py) both sample the Hub `train` split. The evaluation script contains no training-window exclusion; retained artifacts do not establish the historical Hub revision or a disjoint split. Independence is unverified, not disproved. Real-derived inputs alone do not establish held-out generalization or exclude memorization.
+
+**Distribution and task boundary**: The accompanying set has 333 convergence and 143 settled-presence examples (476/500, or 95.2%). The other counts are falling energy 8, rising entropy 6, entropy-spike recovery 4, and 2 each for void rising and the two basin-transition shapes. Rare-shape scores therefore rest on very small samples. The classified shape is supplied to the model; coherence scores token-to-shape affinity, not safety, reasoning quality, or independent shape discovery.
 
 ### 4.5 Baseline Implementations
 
@@ -574,7 +578,7 @@ This doubled the representation of the three weakest shapes (drift_dissonance: 0
 
 ### 5.1 Training Progression
 
-The core result is six iterations of improvement, culminating in neural surpassing symbolic:
+The recorded progression spans six iterations with different training and evaluation conditions; it is not a controlled held-out superiority comparison:
 
 | Version | Data | Coherence | Valid Rate | Key Change |
 |---------|------|-----------|------------|------------|
@@ -583,7 +587,7 @@ The core result is six iterations of improvement, culminating in neural surpassi
 | V4 | 3,600 synthetic, 7 epochs | 0.904 | 100% | More data, diminishing returns starting |
 | V5 | 3,840 synthetic (oversampled), 7 epochs | 0.911 | 100% | Synthetic ceiling reached |
 | V5 (real eval) | same model | **0.768** | 100% | Synthetic-to-real gap exposed |
-| V6 | ~2,880 blended (50% real), 7 epochs | **0.952** (real) | 100% | **Surpasses rule-based baseline** |
+| V6 | ~2,880 blended (50% real), 7 epochs | **0.952** (real) | 100% | **Recorded score; independence unverified** |
 
 **Baselines**: Random 0.265 -> Affinity-weighted 0.503 -> Feedback-learned 0.933
 
@@ -594,7 +598,7 @@ The core result is six iterations of improvement, culminating in neural surpassi
 - **Valid rate jumped to 100%** at V3 and stayed there — the model stopped hallucinating tokens
 - **V5 hit the synthetic ceiling** at ~0.91 — further synthetic scaling unlikely to improve beyond this
 - **Real data evaluation (V5)** exposed the 14% gap: 0.911 synthetic -> 0.768 real
-- **Blended training (V6)** not only closed the gap but surpassed the rule-based baseline: **0.952 on real data**
+- **Blended training (V6)** recorded **0.952 on 500 real-derived examples**; the improvement needs confirmation on a disjoint evaluation set
 
 ### 5.2 Per-Shape Performance (V6 on Real Data)
 
@@ -611,7 +615,7 @@ V6's per-shape coherence on 500 real Lumen trajectories:
 | falling_energy | 0.988 | 0.625 | **0.875** | +0.250 |
 | entropy_spike_recovery | 0.954 | 0.625 | **0.833** | +0.208 |
 
-**Analysis**: The shapes that collapsed on V5's real-data evaluation — settled_presence (0.731), falling_energy (0.625), entropy_spike_recovery (0.625) — recovered dramatically in V6. Settled_presence jumped from 0.731 to 0.993. The model learned to handle the noise, quantization plateaus, and ambiguous boundaries of real data by being trained on them.
+**Analysis**: The shapes that collapsed on V5's real-data evaluation — settled_presence (0.731), falling_energy (0.625), entropy_spike_recovery (0.625) — recovered dramatically in V6. Settled_presence jumped from 0.731 to 0.993. Those recorded gains are consistent with improved real-data handling, but cannot establish that explanation without verified separation from training windows.
 
 Six of eight observed shapes achieve >= 0.936 coherence. The two remaining below 0.9 — falling_energy (0.875) and entropy_spike_recovery (0.833) — are rare shapes with inherently fuzzy boundaries. Even these exceed the random baseline (0.265) by wide margins.
 
@@ -631,21 +635,21 @@ The `student_tiny` is exported as pure JSON (serialized decision trees), runnabl
 
 ### 5.4 Hypothesis Testing
 
-The original draft proposed four hypotheses for the V1 gap. Six iterations later, all have been resolved:
+The original draft proposed four hypotheses for the V1 gap. Six iterations later, the recorded scores inform these hypotheses, but do not resolve them all:
 
 #### Hypothesis 1: Synthetic Data Mismatch
-**Status: CONFIRMED and RESOLVED.** V5 real-data evaluation (0.768 vs 0.911 synthetic) confirmed the mismatch. V6 blended training (50/50 real + synthetic) resolved it: 0.952 on real data. The fix was straightforward — include real trajectories in training.
+**Status: CONSISTENT WITH THE RECORDED SCORES, NOT ISOLATED.** V5 scored 0.768 on real-derived examples versus 0.911 on synthetic evaluation. V6 blended training recorded 0.952 on real-derived examples, but unverified training/evaluation independence means this does not establish that domain mismatch was resolved on unseen windows.
 
 #### Hypothesis 2: Model Capacity Bottleneck
 **Status: DISPROVED.** V4/V5 showed that rank 16 LoRA with 7 target modules learns all 9 shapes to >0.84 coherence. The three shapes that scored 0.0 in V1 all recovered with more data, not more capacity.
 
 #### Hypothesis 3: Loss Function Mismatch
-**Status: UNNECESSARY.** Standard cross-entropy achieved 0.952 coherence — surpassing the rule-based baseline. Custom loss functions were never needed.
+**Status: NOT TESTED DIRECTLY.** Standard cross-entropy produced the recorded 0.952 score; custom losses were not compared. This does not establish that a different loss is unnecessary for held-out performance.
 
 #### Hypothesis 4: Class Imbalance
-**Status: PARTIALLY CONFIRMED but SECONDARY.** Oversampling weak shapes helped (drift_dissonance: 0.0 -> 0.86), but the primary bottleneck was data distribution, not class balance.
+**Status: SUGGESTIVE, NOT ISOLATED.** Oversampling weak shapes coincided with improved recorded scores (drift_dissonance: 0.0 -> 0.86). Its contribution relative to other changes needs a controlled comparison.
 
-**The actual bottleneck**, not in the original hypotheses: **synthetic-to-real data mismatch**. The model learned clean synthetic patterns but couldn't generalize to the noise, quantization artifacts, and ambiguous boundaries of real sensor data. Blended training was the fix.
+**A candidate bottleneck is synthetic-to-real data mismatch.** A pinned, disjoint real-only evaluation is needed to distinguish improved generalization from possible training-window overlap and other changes between versions.
 
 ### 5.5 The Window-Size Problem
 
@@ -663,7 +667,7 @@ Shape labels in the HuggingFace dataset were generated from full 20-step traject
 
 The mechanism is clear: a 4-step window only sees the tail end of dynamic trajectories. Entropy spike recovery needs you to see the spike AND the recovery. Basin transitions need the full arc. Settled presence needs enough history to confirm it's truly settled, not just converging.
 
-Despite this, V6 achieved 0.952 coherence even with 4-step input windows — suggesting the model learned to compensate for information loss when trained on real data. A V7 with 15-20 step windows could improve further.
+V6 recorded 0.952 coherence with 4-step input windows, but unverified evaluation independence prevents attributing that score to learned compensation for information loss. A V7 with 15-20 step windows could improve further.
 
 ### 5.6 Diversity
 
@@ -689,18 +693,18 @@ Real sensor data (214,503 snapshots)
                   -> On-device deployment (Raspberry Pi 4)
 ```
 
-Each stage is independently useful and openly available. The dataset stands alone as a benchmark. The rule-based system runs in production. The teacher model advances the state of the art. The student model makes it deployable.
+Each stage is independently useful and openly available. The dataset stands alone as a benchmark. The rule-based system runs in production. The teacher model provides a recorded result with the evaluation limits above. The student model makes it deployable.
 
-### 6.2 Why Blended Training Works
+### 6.2 Why Blended Training May Help
 
-V6's breakthrough comes from a simple insight: **you need real data in the training set**. The 50/50 blend of real + synthetic trajectories exposes the model to:
+**Blended training is a candidate way to reduce domain mismatch**, not a demonstrated generalization breakthrough here. The 50/50 blend of real + synthetic trajectories exposes the model to:
 
 - **Sensor quantization**: 16.8% of I values are repeated plateaus — synthetic data has smooth curves
 - **Irregular sampling**: Real intervals vary from <1s to >20s — synthetic data is evenly spaced
 - **Ambiguous boundaries**: settled_presence/convergence boundary is fuzzy in practice — synthetic data has clean separations
 - **Jump discontinuities**: 56 energy jumps >0.4 in real data — synthetic data has gradual transitions
 
-The model doesn't just memorize real trajectories (the training set has ~1,800 real examples, but the eval set draws from the full 21,449). It learns to *handle the characteristics* of real data — noise tolerance, quantization robustness, boundary flexibility. This is domain adaptation through data mixing, the simplest form of transfer learning.
+Sampling evaluation examples from a larger corpus does not exclude reuse of training windows. The recorded result is compatible with improved handling of real-data characteristics, but it does not distinguish that explanation from possible overlap. Do not infer non-memorization or domain adaptation without a disjoint evaluation.
 
 ### 6.3 The Distillation Surprise
 
@@ -714,6 +718,9 @@ This suggests that the shape-token affinity structure is *simpler than the teach
 
 **Dataset regeneration needs a live deployment**
 The UNITARES framework that produces EISV trajectories is Apache-2.0 at [github.com/cirwel/unitares](https://github.com/cirwel/unitares). Regenerating the dataset needs a live UNITARES deployment receiving Lumen's check-ins, which limits reproducibility of the *dataset generation* process, though the dataset itself is public.
+
+**Evaluation independence and provenance**
+The 0.952 score is a recorded 500-example result, not a verified held-out estimate. Future evaluation should pin the dataset revision, split by nonoverlapping source time blocks before constructing windows, retain source IDs and timestamps, and report per-shape counts. Existing training preparation also uses Python's process-randomized `hash(shape)` in synthetic seeding; the ordinary seed alone does not establish reproducibility across processes. Historical hash-seed settings are unknown.
 
 **Single entity (Lumen only)**
 All trajectories come from one Raspberry Pi 4 in Colorado. The shape classes and affinities may not generalize to other embodied systems with different sensors or physical substrates.
@@ -751,7 +758,7 @@ This work demonstrates that computational entities can express dynamics, not jus
 EISV trajectories are part of a larger governance framework (UNITARES) for multi-agent systems. Trajectory-aware expression could enable agents to self-report risk states before governance thresholds trigger interventions.
 
 **Synthetic-to-real transfer**
-The V5->V6 gap-and-resolution pattern is not unique to EISV. Any system trained on synthetic data and deployed on real-world signals will face this. Our approach (synthetic -> evaluate on real -> blend -> retrain) is a practical template applicable beyond embodied AI.
+The V5-to-V6 recorded progression motivates investigating synthetic-to-real transfer. A reusable workflow would reserve disjoint real-data evaluation windows before blending and retraining; the current result does not yet validate transfer to unseen windows.
 
 **Distillation for edge deployment**
 Compressing a 4B-parameter teacher to a 1.5 MB student with 97% coherence retention demonstrates that heavyweight neural training can produce lightweight deployable artifacts. The full pipeline — large model training on a workstation, distillation to a tiny model, deployment to a microcomputer — is reproducible with open tools.
@@ -762,11 +769,11 @@ Compressing a 4B-parameter teacher to a 1.5 MB student with 97% coherence retent
 
 Can an AI entity learn to express the shape of its own dynamics?
 
-Yes. And it can do so better than hand-tuned rules.
+The recorded results show a working trajectory-to-token pipeline. They do not yet establish held-out superiority over hand-tuned rules.
 
-Layer 2 proved the task was achievable: 0.933 coherence with symbolic rules and feedback learning, running on a Raspberry Pi 4. Layer 3 showed that fine-tuned language models could approach this through iterative improvement — 0.600 to 0.911 across five training versions on synthetic data. But the critical test was real data: V5 dropped to 0.768, exposing synthetic-to-real mismatch as the primary bottleneck.
+Layer 2 proved the task was achievable: 0.933 coherence with symbolic rules and feedback learning, running on a Raspberry Pi 4. Layer 3 showed that fine-tuned language models could approach this through iterative improvement — 0.600 to 0.911 across five training versions on synthetic data. But the critical test was real data: V5 scored 0.768, motivating further investigation of synthetic-to-real mismatch.
 
-V6 resolved it. Trained on a 50/50 blend of real Lumen trajectories and synthetic examples, the teacher achieved **0.952 coherence on real data** — surpassing the rule-based baseline by 2 percentage points. The shapes that had collapsed under V5's real-data evaluation recovered: settled_presence from 0.731 to 0.993, falling_energy from 0.625 to 0.875. The model learned to handle sensor noise, quantization artifacts, and ambiguous shape boundaries by being trained on them.
+V6 recorded **0.952 coherence on 500 real-derived examples** after blended real + synthetic training, numerically above the historical 0.933 rule-based score. Training/evaluation independence is unverified, so this is not yet a held-out superiority result. The shapes that had collapsed under V5's real-data evaluation recovered: settled_presence from 0.731 to 0.993, falling_energy from 0.625 to 0.875. A disjoint evaluation is needed to test whether those gains reflect generalization to unseen sensor windows.
 
 Distillation compressed the teacher's knowledge into a 1.5 MB RandomForest student deployable on Lumen's Raspberry Pi 4 — the same hardware that runs the rule-based system. The student achieves 0.924 coherence, and the mid-size student reaches 0.986.
 
@@ -872,12 +879,12 @@ Thank you to the UNITARES governance framework for producing the EISV trajectori
 - Synthetic: 0.911 -> Real: 0.768 (-14.3%)
 - Shapes that held: void_rising (1.000), basin_transition_up (1.000), rising_entropy (0.917)
 - Shapes that collapsed: falling_energy (0.625), entropy_spike_recovery (0.625), settled_presence (0.731)
-- Diagnosis: synthetic data mismatch is the primary bottleneck
+- Hypothesis: synthetic-to-real mismatch may contribute to the lower score
 
-### V6: Blended Training Closes and Surpasses
+### V6: Recorded Blended-Training Result
 - ~2,880 examples: 1,803 real + 1,797 synthetic (50/50 blend)
 - V6 synthetic eval: 0.912 coherence (comparable to V5)
-- **V6 real eval: 0.952 coherence** (surpasses 0.933 rule-based baseline)
+- **V6 real eval: 0.952 coherence on 500 examples** (training/evaluation independence unverified)
 - Biggest recoveries from V5 real: settled_presence +0.262, falling_energy +0.250, entropy_spike_recovery +0.208
 - 6 of 8 observed shapes at >= 0.936 coherence
 
