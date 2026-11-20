@@ -203,7 +203,7 @@ This dataset captures the internal state of an AI agent, not human behaviour. It
 The dataset is the Layer-1 substrate of the **EISV-Lumen** three-layer benchmark. Companion artefacts:
 
 - **Repository:** [CIRWEL/eisv-lumen](https://github.com/CIRWEL/eisv-lumen) — full pipeline (Layer 1 dataset, Layer 2 rule-based expression generator, Layer 3 fine-tuning + distillation), 399 tests, evaluation framework.
-- **Teacher model:** [`hikewa/eisv-lumen-teacher`](https://huggingface.co/hikewa/eisv-lumen-teacher) — Qwen3-4B + LoRA, 0.952 expression coherence on real Lumen windows (a token-to-shape fit score, unrelated to UNITARES coherence).
+- **Teacher model:** [`hikewa/eisv-lumen-teacher`](https://huggingface.co/hikewa/eisv-lumen-teacher) — Qwen3-4B + LoRA; the [saved V6 evaluation](https://github.com/cirwel/eisv-lumen/blob/fc876d2e5394925d7ff9b5ccc744c8b00a24a092/outputs/eval_results_v6_real.json) reports **0.952 token-to-shape coherence on 500 real-derived examples**. Training/evaluation independence is unverified; this does not establish overlap. The score does not measure UNITARES governance coherence or safety.
 - **Student model:** [`hikewa/eisv-lumen-student`](https://huggingface.co/hikewa/eisv-lumen-student) — RandomForest distillation; on-device variant runs on Lumen's Pi.
 - **Interactive demo:** [EISV-Lumen Explorer](https://huggingface.co/spaces/hikewa/eisv-lumen-explorer).
 - **Sibling dataset:** [`hikewa/unitares-verdict-counterfactual-v6.8`](https://huggingface.co/datasets/hikewa/unitares-verdict-counterfactual-v6.8) — state-vector basin-flip counterfactual cited in Wang 2026a §11.6.
